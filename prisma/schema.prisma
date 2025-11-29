@@ -1,0 +1,46 @@
+// Prisma schema for Linus Tattoo Studio deposits
+// Database: SQLite (local dev)
+// To change databases, update the provider/url and run migrations.
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Deposit {
+  id                String   @id @default(cuid())
+  sessionId         String   @unique
+  email             String?
+  amount            Int
+  currency          String
+  paymentStatus     String
+  mode              String?
+  paymentIntentId   String?
+  metadata          Json?
+  bookingId         String?
+  booking           Booking? @relation(fields: [bookingId], references: [id])
+  createdAt         DateTime @default(now())
+}
+
+model Booking {
+  id             String   @id @default(cuid())
+  name           String
+  email          String
+  phone          String?
+  placement      String
+  size           String
+  style          String?
+  preferredDates String?
+  budget         String?
+  references     String?
+  uploads        Json?
+  details        String
+  createdAt      DateTime @default(now())
+
+  deposits       Deposit[]
+}
+
